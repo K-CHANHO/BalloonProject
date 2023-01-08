@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_red.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+  .category, .buttons{
+      margin-top: 50px;
+  }
+  .title{
+      display:inline;
+  }
+  .hits, .regDate, .postreform, .card-text, .card-reform{
+      float: right;
+  }
+  .hits{
+      margin-left: 30px;
+  }
+  .replys{
+      margin-top: 30px;
+  }
+  .replys span:nth-child(1){
+      font-size: 20px;
+  }
+  .replyinput{
+      text-align: center;
+      margin-bottom: 50px;
+      margin-top:15px;
+  }
+  .replyinput input{
+      width: 85%;
+      border-left-width:0;
+      border-right-width:0;
+      border-top-width:0;
+      border-bottom-width:1;
+      outline: none;
+  }
+  .replyinput input:focus{
+      border-bottom: 2px solid;
+  }
+  .addReply{
+      float: right;
+      margin-right: 50px;
+  }
+  .goodbox{
+      position: relative;
+      text-align: center;
+
+  }
+  #goodMother{
+      position: absolute;
+      top: 20%;
+      left: 47%;
+      width:65px;
+      display:flex;
+      justify-content: center;
+}
+  .good{
+      font-size: 15px;
+      font-weight: 800;
+  }
+  .card-title{
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      border:none;
+      outline: none;
+  }
+  .card-body img{
+      width: 50px;
+      height: 50px;
+      border-radius: 70%;
+      overflow: hidden;
+  }
+  .badge{
+      float: right;
+  }
+  .content{
+    border: none;
+    width: 100%;
+    min-height: 200px;
+    resize: none;
+  }
+  textarea:focus{
+    outline:none;
+  }
+  .card-title{
+    resize: none;
+  }
+  .fa-pen-to-square {
+    color: white;
+    background-color: #85C3E0;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .removeBtn{
+    color: white;
+    background-color: #d56f6f;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .fa-pen-to-square:hover, .removeBtn:hover{
+    color: #515151;
+  }
+  .listBtn{
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #85C3E0;
+    margin-bottom: 50px;
+    margin-right: 20px;
+  }
+  .listBtn span{
+    display: inline-block;
+    color: white;
+    padding-top: 5px;
+  }
+  .replySave{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+  }
+  .replyRemove, .replyModify, .replyConfirm, .replyCancel{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+    float: right;
+    background-color: transparent;
+  }
+  .replySave:hover{
+    background-color: #D7D7D7;
+  }
+  .removeBtn{
+    margin-left: 20px;
+  }
+  .goodimg:hover, .good:hover{
+    cursor: pointer;
+  }
+  #goodtext{
+      position: absolute;
+      top: -20%;
+      left: 48.5%;
+      font-size: 12px;
+      font-weight: 800;
+  }
+
+</style>
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+    <div class="container">
+      <p class="category">추천 게시판</p><hr>
+      <h2 class="title">[[${dto.title}]]</h2>
+      <span class="regDate">[[${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm')}]]</span>
+      <div>
+        <span class="nickName">[[${dto.nickname}]]</span>
+        <span class="hits">조회수 [[${dto.hits}]]</span>
+      </div>
+      <hr>
+      <div class="container">
+        <textarea class="content" readonly>[[${dto.content}]]</textarea>
+
+        <div class="uploadResult">
+          <ul>
+            <li th:each="recomBoardImage: ${dto.imageDTOList}" th:data-file="${recomBoardImage.getThumbnailURL()}">
+              <img th:if="${recomBoardImage.path != null}" th:src="|/recom/display?fileName=${recomBoardImage.getThumbnailURL()}|">
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a th:href="@{/balloon/recom(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+          <button type="button" class="listBtn">
+            <span class="material-icons">
+                library_books
+            </span>
+          </button>
+        </a>
+        <div th:if="${memberDTO != null and memberDTO.id == dto.id}" class="postreform">
+          <a th:href="@{/balloon/recom_modify(bno = ${dto.bno}, page=${requestDTO.page}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}" style="text-decoration:none">
+            <button type="button" class="fa-regular fa-pen-to-square"></button>
+          </a>
+          <a th:href="@{/balloon/recom_remove(bno = ${dto.bno})}">
+            <button type="button" class="removeBtn fa-regular fa-trash-can"></button>
+          </a>
+        </div>
+      </div>
+
+      <div class="goodbox" style="height:100px;">
+        <img src="/img/balloon_white.png" id="goodimg" class="goodimg" style="height:100%;">
+        <div id="goodtext">좋아요</div>
+        <div id="goodMother" class="goodimg">
+          <div class="good"></div>
+        </div>
+
+          <input th:if="${memberDTO != null}" type="hidden" name="id" th:value="${memberDTO.id}">
+          <input type="hidden" name="bno" th:value="${dto.bno}">
+          <input th:if="${memberDTO != null}" type="hidden" name="replynickname" th:value="${memberDTO.nickname}" readonly>
+      </div>
+
+      <!--      <div>-->
+      <!--        <div class="mt-4">-->
+      <!--          <h5 ><span class="badge badge-info addReply" style="cursor:pointer;">Add Reply</span> </h5>-->
+      <!--          <h5 ><span class="badge badge-secondary replyCount"> Reply Count  [[${dto.replyCount}]]</span> </h5>-->
+      <!--        </div>-->
+      <!--댓글 추가 부분-->
+      <div class="list-group replyList">
+
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+          // 게시물 높이에 맞게 자동적용
+          var txtArea = $("textarea.content");
+          if (txtArea) {
+              txtArea.each(function(){
+                  $(this).height(this.scrollHeight);
+              });
+          }
+
+          $(document).ready(function() {
+
+              member=$('input[name="id"]').val();
+              recomboard=$('input[name="bno"]').val();
+              var memberInfo = [[${memberDTO}]]; // 제이쿼리에서 사용할 member정보(비회원은 null)
+
+        var listGroup  = $(".replyList");
+
+        function formatTime(str){
+          var date = new Date(str);
+          return date.getFullYear() + '/' +
+            (date.getMonth() + 1) + '/' +
+            date.getDate() + ' ' +
+            date.getHours() + ':' +
+            date.getMinutes();
+        }
+
+        function loadJSONData() {
+          $.getJSON('/recom_replies/balloon/'+recomboard, function(arr){
+
+            var str =""; // 댓글 가져오는 html 작성
+
+            str += '댓글 (' + arr.length + ')';
+
+            if(memberInfo != null){
+              str += '<div class="replyinput">';
+              str += '<input type="text" name="rcontent" placeholder="댓글을 입력하세요">';
+              str += '<button type="button" class="replySave">추가</button>';
+              str += '</div>';
+            }
+
+            $.each(arr, function(idx, Reply){
+              str += '    <div id=' + Reply.rno + ' class="card-body" data-rno="' + Reply.rno + '">';
+              str += '    <div>';
+              str += '    <img src="/img/user.jpg">';
+              str += '    <span class="card-subtitle mb-2 text-muted" name="rid" value="' + Reply.nickname + '">' + Reply.nickname +'</span>';
+              str += '    <p class="card-text">'+ formatTime(Reply.regDate) +'</p>';
+              str += '    </div>';
+              str += '    <input type="text" class="card-title" name="rtext" readonly value="' + Reply.rcontent + '">';
+
+
+              // 댓글 작성자만 수정, 삭제 버튼 생성
+              if(memberInfo!=null && Reply.id == memberInfo.username){
+                str += '    <button class="replyRemove">삭제</button> <button class="replyModify">수정</button>';
+              }
+
+              str += '    </div><hr>';
+            });
+
+            listGroup.html(str);
+
+          });
+        }
+        loadJSONData();//댓글목록출력
+
+        // 댓글달기 눌렀을때
+        $(document).on("click", ".replySave", function(){
+
+          // 댓글 내용 값
+          rcontent = $('input[name="rcontent"]').val().trim();
+
+          // 댓글 입력창이 빈칸인지 확인
+          if(rcontent.length == 0){
+            alert("댓글을 입력하세요");
+            return false;
+          }
+
+          var reply = {
+            bno: recomboard,
+            rcontent: rcontent,
+            id: $('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val()
+          }
+
+          $('input[name="rcontent"]').val("");
+
+          $.ajax({ // start ajax
+            url: '/recom_replies/',
+            method: 'post',
+            data: JSON.stringify(reply),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){ // start success
+              console.log("댓글추가 성공");
+              loadJSONData();
+            } // end success
+          }) // end ajax
+
+        }); // end 댓글달기
+
+
+        // 수정버튼 눌렀을때
+        $(document).on("click", ".replyModify", function(){
+
+          $(this).siblings().eq(1).css({'border':'solid 2px','height':'100px', 'margin-top':'10px'});
+          $(this).siblings().eq(1).removeAttr("readonly"); // readonly 속성 제거
+
+          $(this).html("등록"); // 수정을 등록으로 바꾸기
+          $(this).attr("class", "replyConfirm"); // 클래스 변경
+
+          $(this).siblings().eq(2).html("취소"); // 삭제를 취소로 변경
+          $(this).siblings().eq(2).attr("class", "replyCancel"); // 클래스 변경
+
+
+        }); // 수정버튼 끝
+
+        // 수정버튼 누른 후 등록버튼 눌렀을때
+        $(document).on("click", ".replyConfirm", function(){
+
+          console.log("등록버튼 이벤트");
+
+          var rno = $(this).parent().data("rno");
+
+          console.log($('#'+rno).children());
+
+          var reply = {
+            bno: recomboard,
+            rno: rno,
+            rcontent: $('#'+rno).children().eq(1).val(),
+            id: $('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val() //div의 value는 .attr로 가져와야 됨
+          }
+
+          console.log(reply);
+
+          $.ajax({ // start ajax
+            url: '/recom_replies/modify',
+            method: 'post',
+            data: JSON.stringify(reply),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){ // start success
+              console.log("댓글이 수정되었습니다.")
+              loadJSONData();
+            } // end success
+          }) // end ajax
+
+
+        }); // end 등록
+
+        // 수정버튼 후 취소버튼을 눌렀을 경우
+        $(document).on("click", ".replyCancel", function(){
+          loadJSONData();
+        });
+
+        // 댓글 삭제버튼 눌렀을때
+        $(document).on("click", ".replyRemove", function(){
+          if(!confirm("댓글을 삭제하시겠습니까?")){
+            return;
+          } else{
+
+            var rno = $(this).parent().data("rno");
+
+            $.ajax({ // start ajax
+              url: '/recom_replies/remove/' + rno,
+              method: 'delete',
+              success: function(data){ // start success
+                console.log("댓글이 삭제되었습니다.")
+                loadJSONData();
+              } // end success
+            }) // end ajax
+          }
+        }); // end 삭제
+        $(".removeBtn").click(function(){
+        var testconfirm = confirm("게시물을 삭제하시겠습니까?");
+
+        if(testconfirm){
+          var targetLi = $(".uploadResult").find("li").get();
+
+          console.log(targetLi);
+
+          for(var i=0; i<targetLi.length; i++){
+            var targetFile = $(targetLi[i]).data("file");
+            console.log(targetFile);
+
+            (function(i) {
+              $.ajax({
+                url: '/removeFile',
+                data: {fileName: targetFile},
+                dataType:'text',
+                type: 'POST',
+                success:function(result){
+                   console.log(i + "파일삭제완료");
+                }
+              });
+            })(i);
+          } // end for
+        } // end confirm
+        else{
+          return false;
+        }
+      }); // end removeBtn
+
+              function goodscnt() {
+                if(memberInfo != null){
+                    $.ajax({
+                        url: '/recom/goodcount',
+                        method: 'get',
+                        data: {id: member, bno: recomboard},
+                        success: function(data){
+
+                            $(".good").html(data.gcount); //해당글 추천 수 표시
+
+                            if(data.torf == true){ //데이터 존재여부에 따라 이미지 변경
+                                document.getElementById('goodimg').src = '/img/balloon_goodred.png'
+                            }else{
+                                document.getElementById('goodimg').src = '/img/balloon_white.png'
+                            }
+                        }
+                    });
+                }else {
+                  $.ajax({
+                    url: '/recom/goodcount',
+                    method: 'get',
+                    data: {bno: recomboard},
+                    success: function(data){
+
+                      $(".good").html(data.gcount); //해당글 추천 수 표시
+                      console.log(data);
+                      document.getElementById('goodimg').src = '/img/balloon_white.png'
+
+                    }
+                  });
+                }
+              }
+              goodscnt(); //처음 read페이지 열림과 동시에 한번 실행
+
+              $(".goodimg").click(function(){ //데이터 생성 및 삭제
+                  if(memberInfo != null){ // 로그인 했을 경우에만 작동
+                       $.ajax({
+                            url: '/recom/good',
+                            method: 'get',
+                            data: {id: member, bno: recomboard},
+                            success: function(data){
+                                console.log("++++++++++++++");
+                                goodscnt(); //데이터 생성, 삭제 후 추천 수 및 이미지 변경
+                            }
+                       });
+                  }else{
+                      alert("좋아요를 누르시려면 로그인을 해주세요");
+                  }
+              });
+          });
+    </script>
+
+
+  </th:block>
+
+</th:block>

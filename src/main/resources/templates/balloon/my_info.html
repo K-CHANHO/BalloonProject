@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_purple.png">
+</head>
+
+<style>
+  * { padding : 0; margin : 0;}
+
+  body{
+    /*background: url("/img/start.jpg");*/
+  }
+  #wrap{
+    /*position: absolute;*/
+    width:100%;
+    height:700px;
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+  }
+  #joinBox{
+    width:500px;
+    height: fit-content;
+    margin:auto;
+    border-radius: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /*background-color: rgba( 128, 128, 128, 0.7 );*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  #joinForm{
+    width : 300px;
+  }
+  input {
+    width: 300px;
+    display: block;
+    margin-bottom: 20px;
+
+  }
+  #changePwBtn, #changeNicknameBtn, #changeNameBtn{
+    background-color: #85C3E0;
+    color: #676767;
+    float: right;
+  }
+
+  #deleteMemberBtn{
+    background-color: #d56f6f;
+    color: #fff;
+  }
+
+  p{
+    color: darkred;
+  }
+</style>
+
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+
+    <div id="wrap">
+      <div class="container" style="text-align: center; ">
+        <h2 style="display: block;">회원정보 수정</h2>
+      </div>
+      <div id="joinBox">
+        <form id="joinForm">
+          <div>
+            <label>ID</label>
+            <input id="userId" class="form-control" type="text" name="id" th:value="${memberDTO.id}" placeholder="id" readonly>
+            <p id="userIdError"></p>
+          </div>
+
+          <div>
+            <label th:if="${memberDTO.sns} == false" >새 비밀번호</label>
+            <input th:style="${memberDTO.sns == false ? 'display:block' : 'display:none'}" id="userPw" class="form-control" type="password" name="pw" th:value="${memberDTO.pw}" placeholder="비밀번호">
+            <p id="userPwError"></p>
+            <label th:if="${memberDTO.sns} == false">새 비밀번호 확인</label>
+            <input th:if="${memberDTO.sns} == false" id="userPw2" class="form-control" type="password" name="isPwChecked" placeholder="비밀번호 확인">
+            <p id="userPw2Error"></p>
+            <button th:if="${memberDTO.sns} == false" id="changePwBtn" type="button" class="btn">비밀번호 변경</button>
+          </div>
+
+
+          <div th:style="${memberDTO.sns == true ? 'margin-top:0' : 'margin-top:20%'}">
+            <label>이메일</label>
+            <input id="userEmail" class="form-control" type="email" name="email" placeholder="email" th:value="${memberDTO.email}" readonly>
+            <p id="userEmailError"></p>
+          </div>
+
+          <div>
+            <label>닉네임</label>
+            <input id="userNickname" class="form-control" type="text" name="nickname" th:value="${memberDTO.nickname}" placeholder="닉네임">
+            <p id="userNicknameError"></p>
+            <button id="changeNicknameBtn" type="button" class="btn">닉네임 변경</button>
+          </div>
+
+          <div style="margin-top: 20%">
+            <label>이름</label>
+            <input th:readonly="${memberDTO.regDate} != ${memberDTO.modDate} or ${memberDTO.sns} == false " id="userName" class="form-control" type="text" name="name" th:value="${memberDTO.name}" placeholder="이름">
+            <p th:if="${memberDTO.regDate} == ${memberDTO.modDate} and ${memberDTO.sns} ==true" style="color: darkred">처음 회원가입 시 한 번만 변경 가능합니다. 꼭 변경해주세요.</p>
+            <p id="userNameError"></p>
+            <button th:if="${memberDTO.regDate} == ${memberDTO.modDate} and ${memberDTO.sns} == true"  id="changeNameBtn" type="button" class="btn">이름 변경</button>
+          </div>
+          <div style="margin-top:20%; margin-left: 33%;">
+            <button id="deleteMemberBtn" type="button" class="btn">회원 탈퇴</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!--    -------------------------------------------------------------------------------------------------------------->
+    <script th:inline="javascript">
+      $(document).ready(function (){
+        let isPwChecked = false;
+        let isPw2Checked = false;
+        let isNameChecked = false;
+        let isNicknameChecked = false;
+
+      //----------------------------------------------------------------------------------------------------------
+        $("#userPw").on('focus',function (){
+          $("#userPw").val("");
+          $("#userPw2").val("");
+        });
+
+        $("#userPw").on('focusout', function() {
+          const userPw = $("#userPw").val();
+          const pwRegexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}";
+
+
+          if(!userPw) {
+            $("#userPwError").show();
+            $("#userPwError").text("비밀번호를 입력해주세요.");
+            $("#userPw").on('keyup', function() {
+              $("#userPwError").hide();
+            });
+            isPwChecked = false;
+            return false;
+          }
+          if(!userPw.match(pwRegexp)){
+            $("#userPwError").show();
+            $("#userPwError").text("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용해주세요.");
+            $("#userPw").on('keyup', function() {
+              $("#userPwError").hide();
+            });
+            isPwChecked = false;
+            return false;
+          }
+          isPwChecked = true;
+
+        });
+
+        //----------------------------------------------------------------------------------------------------------
+
+        $("#userPw2").on('focusout', function() {
+          const userPw = $("#userPw").val();
+          const userPw2 = $("#userPw2").val();
+          $("#userPw2Error").css("color","darkred");
+
+          if(!userPw2) {
+            $("#userPw2Error").show();
+            $("#userPw2Error").text("비밀번호를 다시 한 번 입력해주세요.");
+            isPw2Checked = false;
+            return false;
+          }
+          if(userPw != userPw2){
+            $("#userPw2Error").show();
+            $("#userPw2Error").text("비밀번호가 일치하지 않습니다.");
+            isPw2Checked = false;
+            return false;
+          }else{
+            $("#userPw2Error").show();
+            $("#userPw2Error").css("color","#303030");
+            $("#userPw2Error").text("비밀번호가 일치합니다.");
+            isPw2Checked = true;
+          }
+          $("#userPw2").on('keyup', function() {
+            $("#userPw2Error").hide();
+          });
+        });
+
+        $("#changePwBtn").on('click',function (){
+          if(!isPwChecked || !isPw2Checked){
+            alert("새로 변경하실 비밀번호를 확인해주세요.");
+          }else{
+
+            if(confirm("변경하시겠습니까?") == true){
+              const userId = $("#userId").val();
+              const userPw = $("#userPw").val();
+              const userEmail = $('#userEmail').val();
+              const userNickname = $('#userNickname').val();
+              const userName = $('#userName').val();
+              const userSns = [[${memberDTO.sns}]];
+              const reqObj = {
+                id: userId,
+                pw: userPw,
+                email: userEmail,
+                nickname: userNickname,
+                name: userName,
+                sns: userSns
+              };
+
+              $.ajax({
+                type: "PUT",
+                url: `/balloon/my_info/pw`,
+                data: JSON.stringify(reqObj),
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                success: function(response) {
+                  const message = response.message;
+                  alert(message);
+                  location.reload();
+                },
+                error: function(error) {
+                  console.log('error', error);
+                }
+              });
+            }
+          }
+        });
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        $("#userNickname").on('focusout', function () {
+          const userNickname = $("#userNickname").val();
+          const nicknameRegexp = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+
+          $("#userNicknameError").css("color", "darkred");
+          if (!userNickname) {
+            $("#userNicknameError").show();
+            $("#userNicknameError").text("닉네임을 입력해주세요.");
+            isNicknameChecked = false;
+            return false;
+          }
+          if (!(nicknameRegexp.test(userNickname))) {
+            $("#userNicknameError").show();
+            $("#userNicknameError").text("특수문자를 제외하여 작성해주세요.");
+            isNicknameChecked = false;
+            return false;
+          }
+          $("#userNickname").on('keyup', function () {
+            $("#userNicknameError").hide();
+          });
+
+          $.ajax({
+            type: "GET",
+            url: `/balloon/exist/nickname/${userNickname}`,
+            success: function (response) {
+              const result = response.result;
+              const message = response.message;
+
+              if (!result) {
+                isNicknameChecked = false;
+
+              } else {
+                isNicknameChecked = true;
+                $("#userNicknameError").css("color", "#303030");
+              }
+
+              $("#userNicknameError").show();
+              $("#userNicknameError").text(message);
+            },
+            error: function (error) {
+              console.log('error', error);
+            }
+          });
+        });
+
+        $("#changeNicknameBtn").on('click', function (){
+          const userId = $("#userId").val();
+          const userPw = $("#userPw").val();
+          const userEmail = $('#userEmail').val();
+          const userNickname = $('#userNickname').val();
+          const userName = $('#userName').val();
+          const userSns = [[${memberDTO.sns}]];
+
+          const reqObj = {
+            id: userId,
+            pw: userPw,
+            email: userEmail,
+            nickname: userNickname,
+            name: userName,
+            sns: userSns
+          };
+
+          if(!isNicknameChecked){
+            alert("작성하신 닉네임을 확인해주세요.");
+          }else{
+
+             if(confirm("변경하시겠습니까?") == true){
+
+                $.ajax({
+                  type: "PUT",
+                  url: `/balloon/my_info/nickname`,
+                  data: JSON.stringify(reqObj),
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  success: function(response) {
+                    const message = response.message;
+                    alert(message);
+                    location.reload();
+                  },
+                  error: function(error) {
+                    console.log('error', error);
+                  }
+                });
+             }
+          }
+
+        });
+
+        //--------------------------------------------------------------------------------------------------------------
+        $("#changeNameBtn").on('click', function (){
+          const userId = $("#userId").val();
+          const userPw = $("#userPw").val();
+          const userEmail = $('#userEmail').val();
+          const userNickname = $('#userNickname').val();
+          const userName = $('#userName').val();
+          const userSns = [[${memberDTO.sns}]];
+
+          const nameRegexp = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|]+$/;
+
+          $("#userNameError").css("color","darkred");
+          if(!userName) {
+            $("#userNameError").show();
+            $("#userNameError").text("이름을 입력해주세요.");
+            $("#userName").on('keyup', function() {
+              $("#userNameError").hide();
+            });
+            isNameChecked = false;
+            return false;
+          }
+          if(!(nameRegexp.test(userName))) {
+            $("#userNameError").show();
+            $("#userNameError").text("특수문자와 숫자를 제외하여 작성해주세요.");
+            $("#userName").on('keyup', function() {
+              $("#userNameError").hide();
+            });
+            isNameChecked = false;
+            return false;
+          }
+          isNameChecked = true;
+
+          if(!isNameChecked){
+            alert("작성하신 이름을 확인해주세요.");
+          }else {
+
+            if(confirm("변경하시겠습니까?") == true ){
+              const reqObj = {
+                id: userId,
+                pw: userPw,
+                email: userEmail,
+                nickname: userNickname,
+                name: userName,
+                sns: userSns
+              };
+
+              $.ajax({
+                type: "PUT",
+                url: `/balloon/my_info/name`,
+                data: JSON.stringify(reqObj),
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                success: function (response) {
+                  const message = response.message;
+                  alert(message);
+                  location.reload();
+                },
+                error: function (error) {
+                  console.log('error', error);
+                }
+              });
+            }
+          }
+        });
+
+        //--------------------------------------------------------------------------------------------------------------
+
+        $("#deleteMemberBtn").on('click', function(){
+          if(confirm("탈퇴하시겠습니까? (작성하신 게시물과 댓글이 모두 삭제됩니다.)") == true){
+            const userId = $("#userId").val();
+            console.log(userId);
+
+            $.ajax({
+              type: "DELETE",
+              url: `/balloon/my_info/delete/${userId}`,
+              success: function (response){
+                console.log("response", response);
+                alert("회원탈퇴가 완료되었습니다.");
+                location.href = "/balloon/index";
+              },
+              error: function (error){
+                console.log("error", error);
+              }
+            });
+          }
+        });
+
+
+
+
+
+
+
+      }); //document ready 끝 지점
+
+    </script>
+
+  </th:block>
+
+</th:block>

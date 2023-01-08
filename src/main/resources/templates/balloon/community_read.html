@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_blue.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+<style>
+  .category, .buttons{
+      margin-top: 50px;
+  }
+  .title{
+      display:inline;
+  }
+  .hits, .regDate, .postreform, .card-text, .card-reform{
+      float: right;
+  }
+  .hits{
+      margin-left: 30px;
+  }
+  .goodbox{
+      position: relative;
+      text-align: center;
+
+  }
+  #goodMother{
+      position: absolute;
+      top: 20%;
+      left: 47%;
+      width:65px;
+      display:flex;
+      justify-content: center;
+}
+  .good{
+      font-size: 15px;
+      font-weight: 800;
+  }
+  .goodimg:hover, .good:hover{
+    cursor: pointer;
+  }
+  #goodtext{
+      position: absolute;
+      top: -20%;
+      left: 48.5%;
+      font-size: 12px;
+      font-weight: 800;
+  }
+  .replys{
+      margin-top: 30px;
+  }
+  .replys span:nth-child(1){
+      font-size: 20px;
+  }
+  .replyinput{
+      text-align: center;
+      margin-bottom: 50px;
+      margin-top:15px;
+  }
+  .replyinput input{
+      width: 85%;
+      border-left-width:0;
+      border-right-width:0;
+      border-top-width:0;
+      border-bottom-width:1;
+      outline: none;
+  }
+  .replyinput input:focus{
+      border-bottom: 2px solid;
+  }
+  .replySave{
+      margin-right: 54px;
+      float: right;
+  }
+  .addReply{
+      float: right;
+      margin-right: 50px;
+  }
+  .content{
+    border: none;
+    width: 100%;
+    min-height: 200px;
+    resize: none;
+  }
+  .rcontent{
+    border: none;
+    width: 100%;
+    min-height: 100px;
+    resize: none;
+  }
+  .rcontent:focus{
+    outline: none;
+  }
+  .content:focus{
+    outline: none;
+  }
+  .card-title{
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      border:none;
+      outline: none;
+  }
+  .card-body img{
+      width: 50px;
+      height: 50px;
+      border-radius: 70%;
+      overflow: hidden;
+  }
+  .badge{
+      float: right;
+  }
+  .fa-pen-to-square {
+    color: white;
+    background-color: #85C3E0;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .removeBtn{
+    color: white;
+    background-color: #d56f6f;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .fa-pen-to-square:hover, .removeBtn:hover{
+    color: #515151;
+  }
+  .listBtn{
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #85C3E0;
+    margin-bottom: 50px;
+    margin-right: 20px;
+  }
+  .listBtn span{
+    display: inline-block;
+    color: white;
+    padding-top: 5px;
+  }
+  .replySave{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+  }
+  .replySave:hover{
+    background-color: #D7D7D7;
+  }
+  .removeBtn{
+    margin-left: 20px;
+  }
+  .replyRemove, .replyModify, .replyConfirm, .replyCancel{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+    float: right;
+    background-color: transparent;
+  }
+
+</style>
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+    <div class="container">
+      <p class="category">산책로 커뮤니티</p><hr>
+      <h2 class="title">[[${dto.title}]]</h2>
+      <span class="regDate">[[${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm')}]]</span>
+      <div>
+        <span class="nickName">[[${dto.nickname}]]</span>
+        <span class="hits">조회수 [[${dto.hits}]]</span>
+      </div>
+      <hr>
+      <div class="container">
+        <textarea class="content" readonly>[[${dto.content}]]</textarea>
+
+        <div class="uploadResult">
+          <ul>
+            <li th:each="WalkRecommendBoardImage: ${dto.imageDTOList}" th:data-file="${WalkRecommendBoardImage.getImageURL()}">
+              <img th:if="${WalkRecommendBoardImage.path != null}" th:src="|/display?fileName=${WalkRecommendBoardImage.getThumbnailURL()}|" th:data-imgno="${WalkRecommendBoardImage.imgno}">
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="buttons">
+        <a th:href="@{/balloon/community(page=${requestDTO.page} , subject=${requestDTO.subject}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+          <button type="button" class="listBtn">
+            <span class="material-icons">
+                library_books
+            </span>
+          </button>
+        </a>
+
+        <div th:if="${memberDTO != null and memberDTO.id == dto.id}" class="postreform">
+          <a th:href="@{/balloon/community_modify(bno = ${dto.bno}, page=${requestDTO.page}, subject=${requestDTO.subject}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}" style="text-decoration:none">
+            <button type="button" class="fa-regular fa-pen-to-square"></button>
+          </a>
+          <a th:href="@{/balloon/community_remove(bno = ${dto.bno})}">
+            <button type="button" class="removeBtn fa-regular fa-trash-can"></button>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="goodbox" style="height:100px;">
+
+        <img id="goodimg" class="goodimg" src="/img/balloon_white.png" style="height:100%;">
+        <div id="goodtext">좋아요</div>
+        <div id="goodMother" class="goodimg">
+          <div class="good"></div>
+        </div>
+
+      </div>
+
+    <input th:if="${memberDTO != null}" type="hidden" name="id" th:value="${memberDTO.id}" readonly>
+    <input th:if="${memberDTO != null}" type="hidden" name="replynickname" th:value="${memberDTO.nickname}" readonly>
+
+
+      <!-- 댓글이 추가되는 부분 -->
+      <div class="list-group replyList">
+
+      </div>
+
+    </div>
+
+
+    <script th:inline="javascript">
+      // 게시물 높이에 맞게 자동적용
+      var txtArea = $("textarea.content");
+      if (txtArea) {
+        txtArea.each(function(){
+          $(this).height(this.scrollHeight);
+        });
+      }
+
+      $(document).ready(function() { // 페이지 시작호출
+
+        var bno = [[${dto.bno}]]; // 게시글 번호
+        member=$('input[name="id"]').val(); // 로그인한 사람 id
+        var memberInfo = [[${memberDTO}]]; // 제이쿼리에서 사용할 member정보(비회원은 null)
+        console.log(memberInfo);
+        var listGroup  = $(".replyList");
+
+        function formatTime(str){
+          var date = new Date(str);
+          return date.getFullYear() + '/' +
+            (date.getMonth() + 1) + '/' +
+            date.getDate() + ' ' +
+            date.getHours() + ':' +
+            date.getMinutes();
+        }
+
+        function loadJSONData() {
+          $.getJSON('/replies/balloon/'+bno, function(arr){
+
+            var str =""; // 댓글 가져오는 html 작성
+
+            str += '댓글 (' + arr.length + ')';
+
+            if(memberInfo != null){
+              str += '<div class="replyinput">';
+              str += '<input type="text" name="rcontent" placeholder="댓글을 입력하세요">';
+              str += '<button type="button" class="replySave">추가</button>';
+              str += '</div>';
+            }
+
+            $.each(arr, function(idx, Reply){
+              str += '    <div id=' + Reply.rno + ' class="card-body" style="cursor:pointer;" data-rno="' + Reply.rno + '">';
+              str += '    <div>';
+              str += '    <img src="/img/user.jpg">';
+              str += '    <span class="card-subtitle mb-2 text-muted" name="rid" value="' + Reply.nickname + '">' + Reply.nickname +'</span>';
+              str += '    <p class="card-text">'+ formatTime(Reply.regDate) +'</p>';
+              str += '    </div>';
+              str += '    <textarea class="rcontent" name="rtext" readonly>' + Reply.rcontent + '</textarea>';
+
+              // 댓글 작성자만 수정, 삭제 버튼 생성
+              if(memberInfo!=null && Reply.id == memberInfo.username){
+                str += '   <span class="replyRemove">삭제</span><span class="replyModify">수정</span> ';
+              }
+
+              str += '    </div>';
+            });
+
+            listGroup.html(str);
+
+          });
+        }
+        loadJSONData();//댓글목록출력
+
+        // 댓글달기 눌렀을때
+        $(document).on("click", ".replySave", function(){
+
+          // 댓글 내용 값
+          rcontent = $('input[name="rcontent"]').val().trim();
+
+          // 댓글 입력창이 빈칸인지 확인
+          if(rcontent.length == 0){
+            alert("댓글을 입력하세요");
+            return false;
+          }
+
+          var reply = {
+            bno: bno,
+            rcontent: rcontent,
+            id: $('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val()
+          };
+
+          $('input[name="rcontent"]').val("");
+
+          $.ajax({ // start ajax
+            url: '/replies/',
+            method: 'post',
+            data: JSON.stringify(reply),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){ // start success
+              console.log("댓글추가 성공");
+              loadJSONData();
+            } // end success
+          }) // end ajax
+
+        }); // end 댓글달기
+
+
+        // 수정버튼 눌렀을때
+        $(document).on("click", ".replyModify", function(){
+
+          $(this).siblings().eq(1).css({'border':'solid','height':'100px'});
+          $(this).siblings().eq(1).removeAttr("readonly"); // readonly 속성 제거
+
+          $(this).html("등록"); // 수정을 등록으로 바꾸기
+          $(this).attr("class", "replyConfirm"); // 클래스 변경
+
+          $(this).siblings().eq(2).html("취소"); // 삭제를 취소로 변경
+          $(this).siblings().eq(2).attr("class", "replyCancel"); // 클래스 변경
+
+
+        }); // 수정버튼 끝
+
+        // 수정버튼 누른 후 등록버튼 눌렀을때
+        $(document).on("click", ".replyConfirm", function(){
+
+          console.log("등록버튼 이벤트");
+
+          var rno = $(this).parent().data("rno");
+
+          console.log($('#'+rno).children());
+
+          var reply = {
+            bno: bno,
+            rno: rno,
+            rcontent: $('#'+rno).children().eq(1).val(),
+            id: $('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val() //div의 value는 .attr로 가져와야 됨
+          }
+
+          console.log(reply);
+
+          $.ajax({ // start ajax
+            url: '/replies/modify',
+            method: 'post',
+            data: JSON.stringify(reply),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){ // start success
+              loadJSONData();
+            } // end success
+          }) // end ajax
+
+
+        }); // end 등록
+
+        // 수정버튼 후 취소버튼을 눌렀을 경우
+        $(document).on("click", ".replyCancel", function(){
+
+          loadJSONData();
+
+        });
+
+        // 댓글 삭제버튼 눌렀을때
+        $(document).on("click", ".replyRemove", function(){
+          if(!confirm("댓글을 삭제하시겠습니까?")){
+            return;
+          } else{
+
+            var rno = $(this).parent().data("rno");
+
+            $.ajax({ // start ajax
+              url: '/replies/remove/' + rno,
+              method: 'delete',
+              success: function(data){ // start success
+                console.log("댓글이 삭제되었습니다.")
+                loadJSONData();
+              } // end success
+            }) // end ajax
+          }
+        }); // end 삭제
+
+      // 게시물 삭제시 사진파일도 같이 삭제
+      $(".removeBtn").click(function(){
+        var testconfirm = confirm("게시물을 삭제하시겠습니까?");
+
+        if(testconfirm){
+          var targetLi = $(".uploadResult").find("li").get();
+
+          console.log(targetLi);
+
+          for(var i=0; i<targetLi.length; i++){
+            var targetFile = $(targetLi[i]).data("file");
+            console.log(targetFile);
+
+            (function(i) {
+              $.ajax({
+                url: '/removeFile',
+                data: {fileName: targetFile},
+                dataType:'text',
+                type: 'POST',
+                success:function(result){
+                   console.log(i + "파일삭제완료");
+                }
+              });
+            })(i);
+          } // end for
+        } // end confirm
+        else{
+          return false;
+        }
+      }); // end removeBtn
+
+      function goodscnt() {
+        if(memberInfo != null){
+          $.ajax({
+            url: '/community/goodcount',
+            method: 'get',
+            data: {id: member, bno: bno},
+            success: function(data){
+
+              $(".good").html(data.gcount); //해당글 추천 수 표시
+
+              if(data.torf){ //데이터 존재여부에 따라 이미지 변경
+                  document.getElementById('goodimg').src = '/img/balloon_goodblue.png';
+                  document.getElementById('goodtext').innerHTML = '';
+              }else{
+                  document.getElementById('goodimg').src = '/img/balloon_white.png'
+                  document.getElementById('goodtext').innerHTML = '좋아요';
+
+              }
+            }
+          });
+        } else {
+          $.ajax({
+            url: '/community/goodcount',
+            method: 'get',
+            data: {bno: bno},
+            success: function(data){
+
+              $(".good").html(data.gcount); //해당글 추천 수 표시
+              console.log(data);
+              document.getElementById('goodimg').src = '/img/balloon_white.png'
+
+            }
+          });
+        }
+      }
+      goodscnt(); //처음 read페이지 열림과 동시에 한번 실행
+
+      // 풍선이미지(좋아요) 클릭시 데이터 생성 및 삭제
+      $(".goodimg").click(function(){
+        if(memberInfo != null){ // 로그인 했을 경우에만 작동
+         $.ajax({
+          url: '/community/good',
+          method: 'get',
+          data: {id: member, bno: bno},
+          success: function(data){
+              goodscnt(); //데이터 생성, 삭제 후 추천 수 및 이미지 변경
+          }
+         });
+        } else{
+          alert("좋아요를 누르시려면 로그인을 해주세요");
+        }
+      });
+
+
+
+
+      }); // 페이지 끝
+
+
+
+
+    </script>
+
+
+  </th:block>
+
+</th:block>

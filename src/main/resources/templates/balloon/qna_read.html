@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_orange.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+<style>
+  .category, .buttons{
+      margin-top: 50px;
+  }
+  .title{
+      display:inline;
+  }
+  .hits, .regDate, .postreform, .card-text, .card-reform{
+      float: right;
+  }
+  .hits{
+      margin-left: 30px;
+  }
+  .goodbox{
+      position: relative;
+      text-align: center;
+
+  }
+  .good{
+      position: absolute;
+      top: 80%;
+      left: 54%;
+      font-size: 20px;
+      font-weight: 800;
+  }
+  #goodtext{
+      position: absolute;
+      top: 20%;
+      left: 48%;
+      font-size: 15px;
+      font-weight: 800;
+  }
+  .replys{
+      margin-top: 30px;
+  }
+  .replys span:nth-child(1){
+      font-size: 20px;
+  }
+  .replyinput{
+      text-align: center;
+      margin-bottom: 50px;
+      margin-top:15px;
+  }
+  .replyinput input{
+      width: 85%;
+      border-left-width:0;
+      border-right-width:0;
+      border-top-width:0;
+      border-bottom-width:1;
+      outline: none;
+  }
+  .replyinput input:focus{
+      border-bottom: 2px solid;
+  }
+  .replySave{
+      float: right;
+  }
+  .addReply{
+      float: right;
+      margin-right: 50px;
+  }
+  .content{
+    border: none;
+    width: 100%;
+    min-height: 200px;
+    resize: none;
+  }
+  .rcontent{
+    border: none;
+    width: 100%;
+    min-height: 100px;
+    resize: none;
+  }
+  .rcontent:focus{
+    outline: none;
+  }
+  .content:focus{
+    outline: none;
+  }
+  .card-title{
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      border:none;
+      outline: none;
+  }
+  .card-body img{
+      width: 50px;
+      height: 50px;
+      border-radius: 70%;
+      overflow: hidden;
+  }
+  .badge{
+      float: right;
+  }
+  .fa-pen-to-square {
+    color: white;
+    background-color: #85C3E0;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .removeBtn{
+    color: white;
+    background-color: #d56f6f;
+    border: none;
+    font-size: 25px;
+    width: 50px;
+    height: 50px;
+    outline: none;
+    border-radius: 50%;
+  }
+  .fa-pen-to-square:hover, .removeBtn:hover{
+    color: #515151;
+  }
+  .listBtn{
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #85C3E0;
+    margin-bottom: 50px;
+    margin-right: 20px;
+  }
+  .listBtn span{
+    display: inline-block;
+    color: white;
+    padding-top: 5px;
+  }
+  .replySave{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+  }
+  .replySave:hover{
+    background-color: #D7D7D7;
+  }
+  .removeBtn{
+    margin-left: 20px;
+  }
+  .replyRemove, .replyModify, .replyConfirm, .replyCancel{
+    width: 60px;
+    border-radius: 17px;
+    border: none;
+    color: black;
+    padding: 5px;
+    font-weight: 800;
+    margin-left: 10px;
+    float: right;
+    background-color: transparent;
+  }
+
+
+</style>
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+    <div class="container">
+      <p class="category">질문&건의게시판</p><hr>
+      <h2 class="title">[[${dto.qbtitle}]]</h2>
+      <span class="regDate">[[${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm')}]]</span>
+      <div>
+        <span class="nickName">[[${dto.nickname}]]</span>
+        <span class="hits">조회수 [[${dto.qbhits}]]</span>
+      </div>
+      <hr>
+      <div class="container">
+        <textarea class="content">[[${dto.qbcontent}]]</textarea>
+      </div>
+
+      <div class="buttons">
+        <a th:href="@{/balloon/qna(page=${requestDTO.page} , type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+          <button type="button" class="listBtn">
+            <span class="material-icons">
+                library_books
+            </span>
+          </button>
+        </a>
+
+        <div th:if="${memberDTO != null and memberDTO.id == dto.id}" class="postreform">
+          <a th:href="@{/balloon/qna_modify(qbno = ${dto.qbno}, page=${requestDTO.page}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}" style="text-decoration:none">
+            <button type="button" class="fa-regular fa-pen-to-square"></button>
+          </a>
+          <a th:href="@{/balloon/qna_remove(qbno = ${dto.qbno})}">
+            <button type="button" class="removeBtn fa-regular fa-trash-can"></button>
+          </a>
+        </div>
+      </div>
+
+      <input th:if="${memberDTO != null}" type="hidden" name="id" th:value="${memberDTO.id}" readonly>
+      <input th:if="${memberDTO != null}" type="hidden" name="replynickname" th:value="${memberDTO.nickname}" readonly>
+
+      <!-- 댓글이 추가되는 부분 -->
+      <div class="replyInput" sec:authorize="hasRole('ROLE_ADMIN')">
+
+      </div>
+      <div class="list-group replyList">
+
+      </div>
+
+    </div>
+
+    <script th:inline="javascript">
+
+      // 게시물 높이에 맞게 자동적용
+      var txtArea = $("textarea.content");
+      if (txtArea) {
+        txtArea.each(function(){
+          $(this).height(this.scrollHeight);
+        });
+      }
+
+      // start document
+      $(document).ready(function() {
+        console.log([[${dto}]]);
+        var qbno = [[${dto.qbno}]]; //부모글 번호
+        member=$('input[name="id"]').val(); // 로그인한 사람 id
+        var memberInfo = [[${memberDTO}]]; // 제이쿼리에서 사용할 member정보(비회원은 null)
+        var listGroup  = $(".replyList");
+        var listinput  = $(".replyInput");
+
+        
+        function formatTime(str){
+          var date = new Date(str);
+          return date.getFullYear() + '/' +
+            (date.getMonth() + 1) + '/' +
+            date.getDate() + ' ' +
+            date.getHours() + ':' +
+            date.getMinutes();
+        }
+
+        function loadJSONData() {
+            $.getJSON('/qna_replies/balloon/'+qbno, function(arr){
+
+              var str1 ="";
+              var str2 ="";
+              str1 += '댓글 (' + arr.length + ')';
+
+              // 비회원이면 댓글 추가 창 숨기기
+              console.log(memberInfo);
+
+              if(memberInfo != null){
+                str1 += '<div class="replyinput">';
+                str1 += '<input name="rcontent" placeholder="댓글을 입력하세요">';
+                str1 += '<button type="button" class="replySave">추가</button>';
+                str1 += '</div>';
+
+                listinput.html(str1);
+              }
+
+              $.each(arr, function(idx, qnaReply){
+                console.log(qnaReply);
+                str2 += '    <div id=' + qnaReply.qbrno + ' class="card-body" style="cursor:pointer;" data-rno="' + qnaReply.qbrno + '">';
+                str2 += '    <div>';
+                str2 += '    <img src="/img/user.jpg">';
+                str2 += '    <span class="card-subtitle mb-2 text-muted" name="rid" value="' + qnaReply.nickname + '">' + qnaReply.nickname +'</span>';
+                str2 += '    <p class="card-text">'+ formatTime(qnaReply.regDate) +'</p>';
+                str2 += '    </div>';
+                str2 += '    <textarea class="rcontent" name="rtext" readonly>' + qnaReply.content + '</textarea>';
+
+                // 댓글 작성자만 수정, 삭제 버튼 생성
+                if(memberInfo!=null && qnaReply.id == memberInfo.username){
+                  str2 += '   <span class="replyRemove">삭제</span><span class="replyModify">수정</span>';
+                }
+
+                str2 += '    </div>';
+
+              });
+
+                listGroup.html(str2);
+
+            });
+        } // end loadJSONData
+        loadJSONData();//댓글목록출력
+
+
+        /* Event 처리 ********************************************************************/
+
+        //댓글등록
+        $(document).on("click", ".replySave", function(){
+
+          // 댓글 내용 값
+          rcontent = $('input[name="rcontent"]').val().trim();
+
+          // 댓글 입력창이 빈칸인지 확인
+          if(rcontent.length == 0){
+              alert("댓글을 입력하세요");
+              return false;
+            }
+
+          var qnaReply={
+            qbno:qbno,
+            content:$('input[name="rcontent"]').val(),
+            id:$('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val()
+          };
+
+          console.log(qnaReply);
+
+          // start ajax
+          $.ajax({
+            url: '/qna_replies/', //서버주소
+            method: 'post', //전송방식
+            data: JSON.stringify(qnaReply), //서버로 전송하는 데이터
+            contentType: 'application/json; charset=utf-8', //서버로 전송하는 데이터의 타입
+            dataType: 'json', //서버에서 전송되어 오는 데이터의 타입
+            success: function(data){
+              loadJSONData();//댓글목록갱신
+            }
+          }); // end ajax
+        }); // end 댓글등록
+
+        // 수정버튼 눌렀을때
+        $(document).on("click", ".replyModify", function(){
+
+          $(this).siblings().eq(1).css({'border':'solid','height':'100px'});
+          $(this).siblings().eq(1).removeAttr("readonly"); // readonly 속성 제거
+
+          $(this).html("등록"); // 수정을 등록으로 바꾸기
+          $(this).attr("class", "replyConfirm"); // 클래스 변경
+
+          $(this).siblings().eq(2).html("취소"); // 삭제를 취소로 변경
+          $(this).siblings().eq(2).attr("class", "replyCancel"); // 클래스 변경
+
+
+        }); // 수정버튼 끝
+
+        // 수정버튼 누른 후 등록버튼 눌렀을때
+        $(document).on("click", ".replyConfirm", function(){
+
+          var rno = $(this).parent().data("rno");
+
+          var reply = {
+            qbno: qbno,
+            qbrno: rno,
+            content: $('#'+rno).children().eq(1).val(),
+            id: $('input[name="id"]').val(),
+            nickname: $('input[name="replynickname"]').val() //div의 value는 .attr로 가져와야 됨
+          };
+
+          console.log(reply);
+          
+          // start ajax
+          $.ajax({ 
+            url: '/qna_replies/modify',
+            method: 'post',
+            data: JSON.stringify(reply),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data){ // start success
+              console.log("수정성공");
+              loadJSONData();
+            } // end success
+          }) // end ajax
+        }); // end 등록
+
+        // 수정버튼 후 취소버튼을 눌렀을 경우
+        $(document).on("click", ".replyCancel", function(){
+
+          loadJSONData();
+
+        });
+
+        // 댓글 삭제버튼 눌렀을때
+        $(document).on("click", ".replyRemove", function(){
+          if(!confirm("댓글을 삭제하시겠습니까?")){
+            return;
+          } else{
+
+            var rno = $(this).parent().data("rno");
+
+            $.ajax({ // start ajax
+              url: '/qna_replies/remove/' + rno,
+              method: 'delete',
+              success: function(data){ // start success
+                console.log("댓글이 삭제되었습니다.")
+                loadJSONData();
+              } // end success
+            }); // end ajax
+          } // end else
+        }); // end 삭제
+
+      // 게시물 삭제시
+      $(".removeBtn").click(function(){
+
+        var testconfirm = confirm("게시물을 삭제하시겠습니까?");
+
+        if(!testconfirm) {
+          return false;
+        }
+        });
+
+      }); // end document
+
+
+    </script>
+
+
+  </th:block>
+
+</th:block>

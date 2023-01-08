@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>풍경을 선물받는 시간, 풍선</title>
+    <link rel="icon" href="/img/balloon_purple.png">
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        * { padding : 0; margin : 0;}
+
+        #wrap{
+            position: absolute;
+            width:100%;
+            height:100%;
+            display: flex;
+            align-items: center;
+        }
+        #box{
+            position: absolute;
+            top: 80%;
+            left: 47%;
+            z-index: 0.8;
+            margin:auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #logo{
+            position: absolute;
+            top: 30%;
+            left: 37%;
+            z-index: 0.8;
+            margin:auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h3{
+            color: white;
+        }
+
+        .btn-lg{
+            background-color: #fff;
+            color: #676767;
+        }
+
+         .video-background {
+                background: #000;
+                position: fixed;
+                top: 0; right: 0; bottom: 0; left: 0;
+                z-index: -99;
+        }
+        .video-foreground, .video-background iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        @media (min-aspect-ratio: 16/9) {
+        .video-foreground { height: 300%; top: -100%; }
+        }
+        @media (max-aspect-ratio: 16/9) {
+        .video-foreground { width: 300%; left: -100%; }
+        }
+    </style>
+
+</head>
+<body>
+    <div id="wrap">
+        <div id="logo">
+            <img src="/img/indexlogo.png" style="filter: drop-shadow(5px 5px 5px #FFF);">
+        </div>
+        <div class="video-background">
+            <div class="video-foreground">
+                <iframe src="https://www.youtube.com/embed/umYaPaosxys?controls=0&autoplay=1&mute=1&autoplay=1&loop=1&showinfo=0&rel=0&start=60&loop=1" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+        <div id="box">
+            <a href="/balloon/login" type="button" class="btn btn-lg"><b>산책하러가기</b></a>
+        </div>
+<!--        <input type="hidden" name="id" value="${memberDTO.id}">-->
+    </div>
+</body>
+</html>

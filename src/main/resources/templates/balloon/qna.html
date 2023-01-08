@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>풍경을 선물받는 시간, 풍선</title>
+    <link rel="icon" href="/img/balloon_orange.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<style>
+    table{
+        text-align: center;
+    }
+    .btn-search, .btn-clear{
+        border-radius: 8px;
+        width: 60px;
+        border: none;
+        color: black;
+        padding: 5px;
+        font-weight: 800;
+        margin-left: 10px;
+    }
+    td {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    }
+    .write{
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 50%;
+        background-color: #85C3E0;
+    }
+    .write i{
+        color: white;
+    }
+    .page-item.active .page-link{
+        background-color: #85C3E0 !important;
+        border-color: #85C3E0 !important;
+        color: white !important;
+        border-radius: 0.25rem;
+        z-index: 3;
+    }
+    .page-link{
+        color: black !important;
+        border: none !important;
+    }
+    .page-item:first-child .page-link {
+        margin-left: 0;
+    }
+</style>
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+        <div class="container">
+            <h2 style="display: block; margin: 40px 0; text-align:center;">질문&건의게시판</h2>
+
+
+            <form action="/balloon/qna" method="get" id="searchForm">
+                <div class="input-group" style="width:100%">
+                    <input type="hidden" name="page" value = "1">
+                    <div class="input-group-prepend" style="width:670px; margin:auto;">
+                        <select class="custom-select" name="type" style="width:45%;">
+                            <option th:selected="${pageRequestDTO.type == null}">검색기준</option>
+                            <option value="t" th:selected="${pageRequestDTO.type =='t'}" >제목</option>
+                            <option value="t" th:selected="${pageRequestDTO.type =='c'}"  >내용</option>
+                            <option value="t"  th:selected="${pageRequestDTO.type =='w'}" >작성자</option>
+                            <option value="tc"  th:selected="${pageRequestDTO.type =='tc'}" >제목+내용</option>
+                        </select>
+                        <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                        <button class="btn-search" type="button" style="width:15%;">검색</button>
+                        <button class="btn-clear" type="button" style="width:20%;">초기화</button>
+                    </div>
+                </div>
+
+                <div style="float:right;">
+                    <select class="form-control" name="size" id="size" style="margin-bottom: 10px;">
+                        <option value="5" th:selected="${pageRequestDTO.size ==5}" >5개</option>
+                        <option value="10" th:selected="${pageRequestDTO.size ==10}"  >10개</option>
+                        <option value="15"  th:selected="${pageRequestDTO.size ==15}" >15개</option>
+                    </select>
+                </div>
+            </form>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col" width="8%" style="text-align:center;">글번호</th>
+                    <th scope="col" width="54%">제목</th>
+                    <th scope="col" width="15%" style="text-align:center;">작성자</th>
+                    <th scope="col" width="15%" style="text-align:center;">작성일</th>
+                    <th scope="col" width="8%" style="text-align:center;">조회수</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="dto : ${result.dtoList}" >
+                    <th scope="row" style="text-align:center;">
+                        <a th:href="@{/balloon/qna_read(qbno = ${dto.qbno},
+                        page= ${result.page},
+                        type=${pageRequestDTO.type} ,
+                        keyword = ${pageRequestDTO.keyword})}">
+                            [[${dto.qbno}]]
+                        </a>
+                    </th>
+                    <td style="text-align:left;">
+                        <a th:href="@{/balloon/qna_read(qbno = ${dto.qbno},
+                        page= ${result.page},
+                        type=${pageRequestDTO.type} ,
+                        keyword = ${pageRequestDTO.keyword})}">
+                            [[${dto.qbtitle}]] [<b th:text="${dto.qbreplyCount}"></b>]
+                        </a>
+                    </td>
+                    <td style="text-align:center;">[[${dto.nickname}]] </td>
+                    <td style="text-align:center;">[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+                    <td style="text-align:center;">[[${dto.qbhits}]] </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div style="display: flex; width: 100%; justify-content: right">
+                <a th:href="@{/balloon/qna_register}">
+                    <button type="button" class="write">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </a>
+            </div>
+
+            <div>
+                <ul class="pagination h-100 justify-content-center align-items-center">
+
+                    <li class="page-item " th:if="${result.prev}">
+                        <a class="page-link" th:href="@{/balloon/qna(page= ${result.start -1},size=${pageRequestDTO.size},
+                            type=${pageRequestDTO.type} ,
+                            keyword = ${pageRequestDTO.keyword} ) }" tabindex="-1">Previous</a>
+                    </li>
+
+                    <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                        <a class="page-link" th:href="@{/balloon/qna(page = ${page} ,size=${pageRequestDTO.size},
+                           type=${pageRequestDTO.type} ,
+                           keyword = ${pageRequestDTO.keyword}  )}">
+                            [[${page}]]
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:if="${result.next}">
+                        <a class="page-link" th:href="@{/balloon/qna(page= ${result.end + 1} ,size=${pageRequestDTO.size},
+                            type=${pageRequestDTO.type} ,
+                            keyword = ${pageRequestDTO.keyword} )}">Next</a>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+
+        <script th:inline="javascript">
+
+            var searchForm = $("#searchForm");
+
+            $('.btn-search').click(function(e){
+
+                searchForm.submit();
+
+            });
+
+            $('.btn-clear').click(function(e){
+
+                searchForm.empty().submit();
+
+            });
+
+            $("#size").change(function(){
+                searchForm.submit();
+            });
+
+
+        </script>
+
+    </th:block>
+
+</th:block>

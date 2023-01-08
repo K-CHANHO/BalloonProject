@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>풍경을 선물받는 시간, 풍선</title>
+    <link rel="icon" href="/img/balloon_blue.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<style>
+    table{
+        text-align: center;
+    }
+    .btn-search, .btn-clear{
+        border-radius: 8px;
+        width: 60px;
+        border: none;
+        color: black;
+        padding: 5px;
+        font-weight: 800;
+        margin-left: 10px;
+    }
+    td, th {
+    max-width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    }
+    .write{
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 50%;
+        background-color: #85C3E0;
+    }
+    .write i{
+        color: white;
+    }
+    .page-item.active .page-link{
+        background-color: #85C3E0 !important;
+        border-color: #85C3E0 !important;
+        color: white !important;
+        border-radius: 0.25rem;
+        z-index: 3;
+    }
+    .page-link{
+        color: black !important;
+        border: none !important;
+    }
+    .page-item:first-child .page-link {
+        margin-left: 0;
+    }
+</style>
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+        <div class="container">
+            <h2 style="display: block; margin: 40px 0; text-align:center;">산책로 커뮤니티</h2>
+
+            <form action="/balloon/community" method="get" id="searchForm">
+                <div class="input-group" style="width:100%">
+                    <input type="hidden" name="page" value = "1">
+                    <div class="input-group-prepend" style="width:670px; margin:auto;">
+                        <select id="subject" class="custom-select" name="subject" style="width:18%;">
+                            <option th:selected="${pageRequestDTO.subject == null}">전체</option>
+                            <option value="road" th:selected="${pageRequestDTO.subject =='road'}">도보</option>
+                            <option value="bike" th:selected="${pageRequestDTO.subject =='bike'}">자전거</option>
+                            <option value="dog"  th:selected="${pageRequestDTO.subject =='dog'}">반려동물</option>
+                        </select>
+                        <select class="custom-select" name="type" style="width:27%;">
+                            <option th:selected="${pageRequestDTO.type == null}">검색기준</option>
+                            <option value="t" th:selected="${pageRequestDTO.type =='t'}" >제목</option>
+                            <option value="c" th:selected="${pageRequestDTO.type =='c'}"  >내용</option>
+                            <option value="w"  th:selected="${pageRequestDTO.type =='w'}" >작성자</option>
+                            <option value="tc"  th:selected="${pageRequestDTO.type =='tc'}" >제목+내용</option>
+                        </select>
+                        <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                        <button class="btn-search" type="button" style="width:15%;">검색</button>
+                        <button class="btn-clear" type="button" style="width:20%;">초기화</button>
+                    </div>
+                </div>
+
+                <div style="float:right;">
+                    <select class="form-control" name="size" id="size" style="margin-bottom: 10px;">
+                        <option value="5" th:selected="${pageRequestDTO.size ==5}" >5개</option>
+                        <option value="10" th:selected="${pageRequestDTO.size ==10}">10개</option>
+                        <option value="15"  th:selected="${pageRequestDTO.size ==15}" >15개</option>
+                    </select>
+                </div>
+            </form>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col" width="8%" style="text-align:center;">글번호</th>
+                    <th scope="col" width="8%" style="text-align:center;">분류</th>
+                    <th scope="col" width="46%">제목</th>
+                    <th scope="col" width="15%" style="text-align:center;">작성자</th>
+                    <th scope="col" width="15%" style="text-align:center;">작성일</th>
+                    <th scope="col" width="8%" style="text-align:center;">조회수</th>
+                </tr>
+                </thead>
+                <!-- 상위 추천글 3개 -->
+                <tbody>
+                <tr th:each="topdto : ${toplist}">
+                    <th scope="row" style="text-align:center;">인기글</th>
+                    <th style="text-align:center;">[[${topdto.subject}]]</th>
+                    <th style="text-align:left;">
+                        <a th:href="@{/balloon/community_read(bno = ${topdto.bno})}">
+                            [[${topdto.title}]] [<b th:text="${topdto.replyCount}"></b>]
+                        </a>
+                    </th>
+                    <th style="text-align:center;">[[${topdto.nickname}]] </th>
+                    <th style="text-align:center;">[[${#temporals.format(topdto.regDate, 'yyyy/MM/dd')}]]</th>
+                    <th style="text-align:center;">[[${topdto.hits}]] </th>
+                </tr>
+                </tbody>
+                <!-- 추천 글 끝 -->
+                <tbody>
+                <tr th:each="dto : ${result.dtoList}" >
+                    <th scope="row" style="text-align:center;">
+                        <a th:href="@{/balloon/community_read(bno = ${dto.bno},
+                        subject= ${pageRequestDTO.subject},
+                        page= ${result.page},
+                        type=${pageRequestDTO.type} ,
+                        keyword = ${pageRequestDTO.keyword})}">
+                            [[${dto.bno}]]
+                        </a>
+                    </th>
+                    <td>[[${dto.subject}]]</td>
+                    <td style="text-align:left;">
+                        <a th:href="@{/balloon/community_read(bno = ${dto.bno},
+                        subject= ${pageRequestDTO.subject},
+                        page= ${result.page},
+                        type=${pageRequestDTO.type} ,
+                        keyword = ${pageRequestDTO.keyword})}">
+                            [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                        </a>
+                    </td>
+                    <td style="text-align:center;">[[${dto.nickname}]] </td>
+                    <td style="text-align:center;">[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+                    <td style="text-align:center;">[[${dto.hits}]] </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div style="display: flex; width: 100%; justify-content: right">
+                <a th:href="@{/balloon/community_register}">
+                    <button type="button" class="write">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                </a>
+            </div>
+
+            <div>
+                <ul class="pagination h-100 justify-content-center align-items-center">
+
+                    <li class="page-item " th:if="${result.prev}">
+                        <a class="page-link" th:href="@{/balloon/community(page= ${result.start -1},size=${pageRequestDTO.size},
+                            subject=${pageRequestDTO.subject} ,
+                            type=${pageRequestDTO.type} ,
+                            keyword = ${pageRequestDTO.keyword} ) }" tabindex="-1">Previous</a>
+                    </li>
+
+                    <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                        <a class="page-link" th:href="@{/balloon/community(page = ${page} ,size=${pageRequestDTO.size},
+                           subject=${pageRequestDTO.subject},
+                           type=${pageRequestDTO.type} ,
+                           keyword = ${pageRequestDTO.keyword}  )}">
+                            [[${page}]]
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:if="${result.next}">
+                        <a class="page-link" th:href="@{/balloon/community(page= ${result.end + 1} ,size=${pageRequestDTO.size},
+                            subject=${pageRequestDTO.subject},
+                            type=${pageRequestDTO.type} ,
+                            keyword = ${pageRequestDTO.keyword} )}">Next</a>
+                    </li>
+
+              </ul>
+            </div>
+
+        </div>
+
+        <script th:inline="javascript">
+
+            var searchForm = $("#searchForm");
+
+            // 검색버튼 클릭시 이벤트
+            $('.btn-search').click(function(e){
+
+                // 검색창 값
+                searchSubject = $('select[name="type"]').val().trim();
+                searchText = $('input[name="keyword"]').val().trim();
+
+                // 검색창이 빈칸인지 확인
+                if(searchText.length == 0){
+                  alert("검색어를 입력하세요");
+                  $('input[name="keyword"]').focus();
+                  return false;
+                } else if(searchSubject == '검색기준'){
+                  alert("검색기준을 설정하세요");
+                  $('select[name="type"]').focus();
+                  return false;
+                } else{
+                    searchForm.submit();
+                }
+
+            });
+
+            // 초기화 버튼 클릭시 이벤트
+            $('.btn-clear').click(function(e){
+                searchForm.empty().submit();
+            });
+
+            // 글 갯수 변경 시 이벤트
+            $("#size").change(function(){
+                searchForm.submit();
+            });
+
+            // 주제 변경 시 이벤트
+            $("#subject").change(function(){
+                searchForm.submit();
+            });
+
+            //  엔터 이벤트
+
+            $("#searchForm").onsubmit(function(e){
+
+                // 검색창 값
+                searchSubject = $('select[name="type"]').val().trim();
+                searchText = $('input[name="keyword"]').val().trim();
+
+                // 검색창이 빈칸인지 확인
+                if(searchText.length == 0){
+                  alert("검색어를 입력하세요");
+                  $('input[name="keyword"]').focus();
+                  return false;
+                } else if(searchSubject == '검색기준'){
+                  alert("검색기준을 설정하세요");
+                  $('select[name="type"]').focus();
+                  return false;
+                } else{
+                    searchForm.submit();
+                }
+
+            });
+
+        </script>
+
+    </th:block>
+
+</th:block>
+</html>

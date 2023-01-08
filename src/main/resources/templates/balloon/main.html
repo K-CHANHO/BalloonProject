@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>풍경을 선물받는 시간, 풍선</title>
+    <link rel="icon" href="/img/balloon_logo2.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+
+</head>
+<style>
+    * { padding : 0; margin : 0;}
+
+     .boardBox{
+            background-color: #D9D9D9;
+            border-radius: 10px;
+            width: 90px;
+            height: 440px;
+            margin:50px;
+            padding: 11px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            /*text-align: center;*/
+        }
+
+     .boardBox2{
+            background-color: #D9D9D9;
+            border-radius: 10px;
+            width: 90px;
+            height: 300px;
+            margin:50px;
+            padding: 11px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            /*text-align: center;*/
+        }
+
+    .borderBox h2, .borderBox h1{
+        display: inline-block;
+        font-family: 'Nanum Pen Script', cursive;
+        letter-spacing: 3px;
+        color: #7EC6E0;
+        font-size:65px;
+        z-index: 10;
+        text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+
+    }
+    #loon{
+        animation-delay: 0.5s;
+    }
+    input {
+        display: inline-block;
+        margin-bottom: 30px;
+        border-radius: 20px;
+        border: none;
+        background-color:white;
+        text-align: center;
+        outline: none;
+        padding-left: 10px;
+        padding-right: 10px;
+        height:50px;
+        width:70%;
+    }
+    input:focus{
+        outline: none;   /* 아웃라인 지우기 */
+    }
+    #mapSearchBox{
+        position:absolute;
+        left:40%;
+        top:38%;
+        width:400px;
+    }
+    #mapSearchBox input{
+
+    }
+    #mapSearchBox img{
+        width:50px;
+    }
+
+
+     .boardBox2{
+            background-color: #D9D9D9;
+            border-radius: 10px;
+            width: 90px;
+            height: 300px;
+            margin:50px;
+            padding: 11px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            /*text-align: center;*/
+        }
+
+       td {
+        max-width: 100px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
+    }
+
+</style>
+
+
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+
+        <div class="borderBox" style="background-color:#A6A6A6;">
+            <img src="/img/mainimg2.jpg" alt="배경1" style="width:100%;height:540px; opacity: 0.5">
+            <div style="position: absolute; bottom: 68%; left: 32%; filter: drop-shadow(10px 20px 50px white);">
+                <!--            <img src="/img/main_words.png" alt="여러분 주변의 풍선을 찾아보세요" style=" color: #7abaff; width:600px; z-index: 10; filter: drop-shadow(10px 20px 50px white);">-->
+                <!--                <h2 class="animate__animated animate__headShake animate__infinite infinite animate__fast">여러분 주변의 풍선을 찾아보세요</h2>-->
+                <h2>여러분 주변의 </h2>
+                <h1 class="animate__animated animate__rubberBand animate__infinite infinite" style="font-size: 75px; color:#D6D17A;">풍</h1>
+                <h1 id="loon" class="animate__animated animate__rubberBand animate__infinite infinite" style="font-size: 75px; color:pink;">선</h1>
+                <h2>을 찾아보세요</h2>
+            </div>
+            <div id="mapSearchBox">
+                <form action="/balloon/walk_map" method="get">
+                    <input id="searchKeyword" type="text" name="keyword" placeholder="지역명을 검색하세요">
+                    <button id="mapSearchBtn" button="submit" class="btn" style="width:20%; padding:0;"><img src="/img/searchBtn.png" style="margin-top:-5px" alt="검색"></button>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="boardBox" style="width:35%;  float:right;">
+                <table class="table table-striped">
+                    <tbody>
+                    <thead>
+                    <tr>
+                        <th scope="col" style="width:80%;">산책로 커뮤니티 게시판</th>
+                        <th scope="col"><a href="http://www.localhost:8081/balloon/community">더보기</a>
+                    </tr>
+                    </thead>
+                    <tr th:each="dto : ${communityGoodTop}">
+                        <td>
+                            <a th:href="@{/balloon/community_read(bno = ${dto.bno})}" style="text-align:left;">
+                                <b>[인기글]</b> [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.hits}]] </td>
+                    </tr>
+                    <tr th:each="dto : ${communityTop}">
+                        <td>
+                            <a th:href="@{/balloon/community_read(bno = ${dto.bno})}">
+                                [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.hits}]] </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="boardBox" style="width:35%;  float:left;">
+                <table class="table table-striped">
+                    <tbody>
+                    <thead>
+                    <tr>
+                        <th scope="col" width="80%">산책로 추천 게시판</th>
+                        <th scope="col"><a href="http://www.localhost:8081/balloon/recom">더보기</a>
+                    </tr>
+                    </thead>
+                    <tr th:each="dto : ${recomGoodTop}">
+                        <td>
+                            <a th:href="@{/balloon/recom_read(bno = ${dto.bno})}">
+                                <b>[인기글]</b> [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.hits}]] </td>
+                    </tr>
+                    <tr th:each="dto : ${recomTop}">
+                        <td>
+                            <a th:href="@{/balloon/recom_read(bno = ${dto.bno})}">
+                                [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.hits}]] </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+            <div class="boardBox2" style="width:35%; float:right;">
+                <table class="table table-striped">
+                    <tbody>
+                    <thead>
+                    <tr>
+                        <th scope="col" width="80%">건의 및 문의 게시판</th>
+                        <th scope="col"><a href="http://www.localhost:8081/balloon/qna">더보기</a>
+                    </tr>
+                    </thead>
+
+                    <tr th:each="dto : ${qnaTop}">
+                        <td>
+                            <a th:href="@{/balloon/qna_read(qbno = ${dto.qbno})}">
+                                [[${dto.qbtitle}]] [<b th:text="${dto.qbreplyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.qbhits}]] </td>
+                    </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+            <div class="boardBox2" style="width:35%;  float:left;">
+                <table class="table table-striped">
+                    <tbody>
+                    <thead>
+                    <tr>
+                        <th scope="col" width="80%">자유 게시판</th>
+                        <th scope="col"><a href="http://www.localhost:8081/balloon/free">더보기</a>
+                    </tr>
+                    </thead>
+
+                    <tr th:each="dto : ${freeTop}">
+                        <td>
+                            <a th:href="@{/balloon/free_read(bno = ${dto.bno})}">
+                                [[${dto.title}]] [<b th:text="${dto.replyCount}"></b>]
+                            </a>
+                        </td>
+                        <td>[[${dto.hits}]] </td>
+                    </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+
+        <script th:inline="javascript">
+
+
+        </script>
+
+
+    </th:block>
+
+</th:block>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<th:block th:fragment="setContent(content)">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>balloon</title>
+  <!-- Bootstrap core CSS -->
+  <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+  <!-- Bootstrap core JavaScript -->
+  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+  <style>
+    #header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    #page-content-wrapper {
+      padding-top: 103px;
+    }
+
+  </style>
+</head>
+
+
+<body>
+  <div id="wrapper">
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav id="header" class="navbar navbar-expand-sm bg-light justify-content-center">
+        <div style="width: 10%; text-align:center; padding-left: 30px; margin: 5px 0;">
+          <a href="/balloon/main"><img  src="/img/logotest1.png" alt="로고" style="width:180px; filter: drop-shadow(5px 5px 5px #fff);"></a>
+        </div>
+        <div style="width: 75%;">
+          <ul class="navbar-nav" id="navList">
+            <li class="nav-item">
+              <a class="nav-link" href="/balloon/walk_map">지도</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/balloon/recom">추천 게시판</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/balloon/community">산책로 커뮤니티</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/balloon/free">자유 게시판</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/balloon/qna">질문&건의 게시판</a>
+            </li>
+          </ul>
+        </div>
+
+        <div id="navBtn" style="width: 15%">
+          <div sec:authorize="isAnonymous()">
+            <a id="loginBtn" href="/balloon/login" type="button" class="btn">로그인</a>
+          </div>
+
+          <div sec:authorize="isAuthenticated()">
+            <form action="/logout" method="POST">
+  <!--            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />-->
+              <button id="logoutBtn" class="btn" type="submit">로그아웃</button>
+            </form>
+          </div>
+
+          <div sec:authorize="isAnonymous()">
+            <a id="joinBtn" href="/balloon/join_member" type="button" class="btn">회원가입</a>
+          </div>
+
+          <div sec:authorize="isAuthenticated()">
+            <a id="myBtn" href="/balloon/my_info" type="button" class="btn">마이페이지</a>
+          </div>
+
+
+        </div>
+      </nav>
+
+      <div>
+        <th:block th:replace="${content}" class="content"></th:block>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+<!-- /#wrapper -->
+
+
+</body>
+
+  <script th:inline="javascript">
+    $(function(){
+      $("#logoutBtn").on('click', function (){
+        alert("로그아웃되었습니다.");
+      });
+    });
+
+
+  </script>
+</th:block>
+</html>
+

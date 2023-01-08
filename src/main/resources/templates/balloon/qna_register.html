@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_orange.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+  .title, .content {
+    display:inline;
+    border: none;
+    width: 100%;
+  }
+  .title:focus, .content:focus {
+    outline: none;
+  }
+  textarea.content {
+    min-height: 200px;
+    resize: none;
+  }
+  #btnSubmit{
+    float: right;
+  }
+  #btnSubmit, .listBtn{
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #85C3E0;
+  }
+  #btnSubmit i{
+    color: white;
+  }
+  .listBtn span{
+    display: inline-block;
+    color: white;
+    padding-top: 5px;
+  }
+  .listBtn{
+    margin-bottom: 50px;
+    margin-right: 20px;
+  }
+</style>
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+    <div class="container" style="margin-top: 40px;">
+
+      <form th:action="@{/balloon/qna_register}" th:method="post">
+        <div class="category">질문&건의게시판</div><hr>
+
+        <div class="container" style="margin:5px;">
+          <input type="text" class="title" name="qbtitle" placeholder="제목을 입력하세요"><hr>
+        </div>
+
+        <div class="container" style="margin:5px;">
+          <textarea class="content" name="qbcontent" placeholder="내용을 입력하세요" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btnSubmit">
+          <i class="fas fa-pencil-alt"></i>
+        </button>
+        <a th:href="@{/balloon/qna}" style="float: right;">
+          <button type="button" class="listBtn">
+              <span class="material-icons">
+                  library_books
+              </span>
+          </button>
+        </a>
+        <input type="hidden" name="id" th:value="${memberDTO.id}">
+
+      </form>
+    </div>
+
+    <script>
+      // 내용에 맞춰 높이 자동조절
+      function resize(obj) {
+        obj.style.height = '1px';
+        obj.style.height = (1+obj.scrollHeight) + 'px';
+      }
+
+      $(document).ready(function(e) {
+        $(document).on("click", "#btnSubmit", function(e){
+
+            e.preventDefault();
+
+            // 제목, 내용 값
+            title = $('input[name="qbtitle"]').val().trim();
+            content = $('textarea[name="qbcontent"]').val().trim();
+
+            // 제목 입력창이 빈칸인지 확인
+            if(title.length == 0){
+              alert("제목을 입력하세요");
+              $('input[name="title"]').focus();
+              return false;
+            }
+
+            // 내용 입력창이 빈칸인지 확인
+            if(content.length == 0){
+              alert("내용을 입력하세요");
+              $('textarea[name="content"]').focus();
+              return false;
+            }
+
+            $("form").submit();
+
+        }); // end submit
+      }); // end document ready
+
+    </script>
+
+  </th:block>
+
+</th:block>

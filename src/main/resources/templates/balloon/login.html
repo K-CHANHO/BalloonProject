@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>풍경을 선물받는 시간, 풍선</title>
+    <link rel="icon" href="/img/balloon_purple.png">
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <style>
+        * { padding : 0; margin : 0;}
+
+        #all{
+            position: fixed;
+            left: -10%;
+            top: -10%;
+            width:120%;
+            height: 120%;
+            background-image: url("/img/start.jpg");
+            opacity: 0.7;
+            z-index: -30;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+
+        #wrap{
+            position: absolute;
+            width:100%;
+            height:100%;
+            display: flex;
+            align-items: center;
+        }
+        #imgBox{
+            position: relative;
+            left: 25%;
+            margin-bottom: 50px;
+        }
+        #start{
+            width:90%;
+            height: 430px;
+            margin:0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            display: block;
+            margin-bottom: 20px;
+        }
+        #loginBox, #passBox{
+            background-color: #a6a6a6;
+            background-color: rgba( 128, 128, 128, 0.7 );
+            border-radius: 10px;
+            width: 40%;
+            height: 100%;
+            margin:0 auto;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            clear: both;
+            /*text-align: center;*/
+        }
+
+        #loginForm{
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loginForm .btn{
+            margin-right:5px;
+        }
+
+        .btn{
+            background-color: #FAFF00;
+            color: #676767;
+        }
+
+        img{
+            width: 50px;
+        }
+
+
+
+    </style>
+</head>
+</head>
+<body>
+    <div id="all"></div>
+
+    <div id="wrap">
+        <div class="container" style="width:800px !important;">
+
+            <div id="imgBox">
+                <img src="/img/logotest1.png" alt="로고" style=" width: 400px; filter: drop-shadow(30px 50px 50px white);">
+            </div>
+
+            <div id="start">
+                <div id="loginBox">
+                    <div id="loginForm">
+                        <form action="/loginProcess" method="post" style="margin-bottom: 5%">
+                            <input class="form-control" type="text" name="username" placeholder="id">
+                            <input class="form-control" type="password" name="password" placeholder="비밀번호">
+                            <input type="checkbox" name="remember-me" style="display: inline-block !important;">자동 로그인
+                            <div style="width: fit-content;">
+                                    <p id="valid" class="alert alert-danger" th:if="${exception}" style="width:210px;">[[${exception}]]</p>
+                            </div>
+
+                            <div style="margin-left: 10%">
+                                <button type="submit" class="btn">로그인</button>
+                                <button type="button" onclick="location.href='/balloon/join_member';" class="btn">회원가입</button>
+                            </div>
+                        </form>
+                        <div style="margin-top: 10px;">
+                            <a href="/oauth2/authorization/google"><img src="/img/login_icon_google.png" alt="Google로 로그인"></a>
+                            <a href="/oauth2/authorization/naver"><img src="/img/login_icon_naver.png" style="width: 48px;" alt="Naver로 로그인"></a>
+                            <a href="/oauth2/authorization/kakao"><img src="/img/login_icon_kakao.png" alt="Kakao로 로그인"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="passBox">
+                    <a href="/balloon/main" class="btn">비회원으로 산책하기</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script th:inline="javascript">
+    const exception = [[${exception}]];
+    console.log(exception);
+</script>
+
+
+</body>
+</html>

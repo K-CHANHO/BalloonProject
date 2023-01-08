@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>풍경을 선물받는 시간, 풍선</title>
+  <link rel="icon" href="/img/balloon_orange.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<style>
+  .title, .content {
+    display:inline;
+    border: none;
+    width: 100%;
+  }
+  .title:focus, .content:focus {
+    outline: none;
+  }
+  textarea.content {
+    min-height: 200px;
+    resize: none;
+  }
+   .modifyBtn, .listBtn{
+    float: right;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background-color: #85C3E0;
+  }
+  .modifyBtn i{
+    color: white;
+  }
+  .listBtn span{
+    display: inline-block;
+    color: white;
+    padding-top: 5px;
+  }
+  .listBtn{
+    margin-bottom: 50px;
+    margin-right: 20px;
+  }
+
+</style>
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content} )}">
+
+  <th:block th:fragment="content">
+
+    <div class="container">
+
+      <div class="mt-4">질문&건의게시판</div><hr>
+
+      <form action="/balloon/qna_modify" method="post">
+
+        <!--페이지 번호  -->
+        <input type="hidden" name="page" th:value="${requestDTO.page}">
+        <input type="hidden" name="type" th:value="${requestDTO.type}" >
+        <input type="hidden" name="keyword" th:value="${requestDTO.keyword}" >
+        <input type="hidden" class="form-control" name="qbno" th:value="${dto.qbno}">
+        <input type="hidden" class="form-control" name="id" th:value="${dto.id}">
+        <input type="hidden" name="qbhits" th:value="${dto.qbhits}">
+        <input type="hidden" name="nickname" th:value="${dto.nickname}">
+
+        <div class="container" style="margin:5px;">
+          <input type="text" class="title" name="qbtitle" th:value="${dto.qbtitle}" >
+        </div>
+        <hr>
+
+        <div class="container" style="margin:5px;">
+          <textarea class="content" name="qbcontent" onkeydown="resize(this)" onkeyup="resize(this)">[[${dto.qbcontent}]]</textarea>
+        </div>
+
+      </form>
+
+      <button type="button" class="modifyBtn">
+        <i class="fas fa-pencil-alt"></i>
+      </button>
+
+      <button type="button" class="listBtn">
+        <span class="material-icons">
+            library_books
+        </span>
+      </button>
+    </div>
+
+    <script th:inline="javascript">
+      // 게시물 높이에 맞게 자동적용
+      var txtArea = $("textarea.content");
+      if (txtArea) {
+        txtArea.each(function(){
+          $(this).height(this.scrollHeight);
+        });
+      }
+      
+      // 내용에 맞춰 높이 자동조절
+      function resize(obj) {
+        obj.style.height = '1px';
+        obj.style.height = (1+obj.scrollHeight) + 'px';
+      }
+      
+      // start document
+      $(document).ready(function(e){
+
+        var actionForm = $("form"); //form 태그 객체
+
+        // 수정버튼 클릭 시 이벤트
+        $(".modifyBtn").click(function() {
+          actionForm
+            .attr("action", "/balloon/qna_modify")
+            .attr("method","post")
+            .submit();
+        }); // end 수정버튼
+
+        // 목록버튼 클릭 시 이벤트
+        $(".listBtn").click(function() {
+            var page = $("input[name='page']");
+            var type = $("input[name='type']");
+            var keyword = $("input[name='keyword']");
+
+            actionForm.empty(); //form 태그의 모든 내용을 지우고
+
+            actionForm.append(page);
+            actionForm.append(type);
+            actionForm.append(keyword);
+
+            actionForm
+                .attr("action", "/balloon/qna")
+                .attr("method","get");
+
+            actionForm.submit();
+
+        }) // end 목록버튼
+        
+      }); // end document
+      
+
+    </script>
+
+
+  </th:block>
+
+</th:block>

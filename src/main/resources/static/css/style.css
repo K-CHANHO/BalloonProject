@@ -1,0 +1,83 @@
+* { padding : 0; margin : 0;}
+
+#header{
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+}
+.navbar{
+    background-color: #85C3E0 !important;
+
+}
+/* #navBtn{
+    float: right;
+} */
+li a{
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+    opacity: 0.7;
+}
+li a:hover{
+    opacity: 1;
+    color: black;
+}
+ul, li{
+    list-style: none;
+}
+#navList li{
+    display: inline-block !important;
+    padding-left:30px;
+}
+#navList{
+    text-align: center !important;
+    width: 100%;
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#loginBtn, #logoutBtn, #joinBtn, #myBtn{
+    font-weight: bold;
+    margin: 3px;
+    float: left;
+    font-size: 18px;
+}
+
+/*테이블 디자인*/
+table {
+  border: 1px #a39485 solid;
+  font-size: .9em;
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+th {
+  text-align: left;
+}
+
+thead {
+  font-weight: bold;
+  color: #fff;
+  background: #85C3E0;
+}
+
+ td, th {
+  padding: 1em .5em;
+  vertical-align: middle;
+}
+
+ td {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  background: #fff;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+    text-decoration: none;
+    color: #85C3E0;
+}
