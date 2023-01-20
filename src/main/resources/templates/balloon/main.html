@@ -12,6 +12,58 @@
 <style>
     * { padding : 0; margin : 0;}
 
+    .borderBox h2, .borderBox h1{
+        display: inline-block;
+        font-family: 'Nanum Pen Script', cursive;
+        letter-spacing: 3px;
+        color: #7EC6E0;
+        font-size: 5vw;
+        z-index: 10;
+        text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
+    }
+
+    .slogan{
+        position: absolute;
+        bottom: 68%;
+        filter: drop-shadow(10px 20px 50px white);
+        text-align: center;
+        width: 100%;
+    }
+
+    #mapSearchBox{
+        position:absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        top:38%;
+        width:50%;
+        display: flex;
+        justify-content: center;
+    }
+
+    #mapSearchBox img{
+        width: 100%;
+        height: 100%;
+    }
+
+    input {
+        border-radius: 20px;
+        border: none;
+        text-align: center;
+        outline: none;
+        padding-left: 10px;
+        padding-right: 10px;
+        height:50px;
+        width: 80%;
+    }
+    input:focus{
+        outline: none;   /* 아웃라인 지우기 */
+    }
+    #mapSearchBtn{
+        width: 10%;
+        height: 100%;
+        padding: 0;
+    }
+
      .boardBox{
             background-color: #D9D9D9;
             border-radius: 10px;
@@ -40,47 +92,12 @@
             /*text-align: center;*/
         }
 
-    .borderBox h2, .borderBox h1{
-        display: inline-block;
-        font-family: 'Nanum Pen Script', cursive;
-        letter-spacing: 3px;
-        color: #7EC6E0;
-        font-size:65px;
-        z-index: 10;
-        text-shadow: -1px 0px black, 0px 1px black, 1px 0px black, 0px -1px black;
 
-    }
     #loon{
         animation-delay: 0.5s;
     }
-    input {
-        display: inline-block;
-        margin-bottom: 30px;
-        border-radius: 20px;
-        border: none;
-        background-color:white;
-        text-align: center;
-        outline: none;
-        padding-left: 10px;
-        padding-right: 10px;
-        height:50px;
-        width:70%;
-    }
-    input:focus{
-        outline: none;   /* 아웃라인 지우기 */
-    }
-    #mapSearchBox{
-        position:absolute;
-        left:40%;
-        top:38%;
-        width:400px;
-    }
-    #mapSearchBox input{
 
-    }
-    #mapSearchBox img{
-        width:50px;
-    }
+
 
 
      .boardBox2{
@@ -113,19 +130,17 @@
     <th:block th:fragment="content">
 
         <div class="borderBox" style="background-color:#A6A6A6;">
-            <img src="/img/mainimg2.jpg" alt="배경1" style="width:100%;height:540px; opacity: 0.5">
-            <div style="position: absolute; bottom: 68%; left: 32%; filter: drop-shadow(10px 20px 50px white);">
-                <!--            <img src="/img/main_words.png" alt="여러분 주변의 풍선을 찾아보세요" style=" color: #7abaff; width:600px; z-index: 10; filter: drop-shadow(10px 20px 50px white);">-->
-                <!--                <h2 class="animate__animated animate__headShake animate__infinite infinite animate__fast">여러분 주변의 풍선을 찾아보세요</h2>-->
+            <img src="/img/mainimg2.jpg" alt="배경1" style="width:100%;height:300px; opacity: 0.5">
+            <div class="slogan">
                 <h2>여러분 주변의 </h2>
-                <h1 class="animate__animated animate__rubberBand animate__infinite infinite" style="font-size: 75px; color:#D6D17A;">풍</h1>
-                <h1 id="loon" class="animate__animated animate__rubberBand animate__infinite infinite" style="font-size: 75px; color:pink;">선</h1>
+                <h1 class="animate__animated animate__rubberBand animate__infinite infinite" style="color:#D6D17A;">풍</h1>
+                <h1 id="loon" class="animate__animated animate__rubberBand animate__infinite infinite" style="color:pink;">선</h1>
                 <h2>을 찾아보세요</h2>
             </div>
             <div id="mapSearchBox">
                 <form action="/balloon/walk_map" method="get">
                     <input id="searchKeyword" type="text" name="keyword" placeholder="지역명을 검색하세요">
-                    <button id="mapSearchBtn" button="submit" class="btn" style="width:20%; padding:0;"><img src="/img/searchBtn.png" style="margin-top:-5px" alt="검색"></button>
+                    <button id="mapSearchBtn" button="submit" class="btn"><img src="/img/searchBtn.png" style="margin-top:-5px" alt="검색"></button>
                 </form>
             </div>
         </div>
@@ -190,9 +205,6 @@
                 </table>
             </div>
 
-
-
-
             <div class="boardBox2" style="width:35%; float:right;">
                 <table class="table table-striped">
                     <tbody>
@@ -245,13 +257,6 @@
             </div>
         </div> 
 
-        <script th:inline="javascript">
-
-
-        </script>
-
-
     </th:block>
 
 </th:block>
-</html>

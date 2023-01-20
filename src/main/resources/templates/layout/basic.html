@@ -19,15 +19,24 @@
   <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
   <style>
+    body{
+      padding-top: 50px;
+    }
+
     #header {
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 1;
+      height: 50px;
+      z-index: 5;
     }
 
-    #page-content-wrapper {
-      padding-top: 103px;
+    @media screen and (min-width: 1245px) { // PC
+
+    }
+
+    @media screen and (max-width: 1245px) { // mobile
+
     }
 
   </style>
@@ -41,10 +50,11 @@
     <div id="page-content-wrapper">
 
       <nav id="header" class="navbar navbar-expand-sm bg-light justify-content-center">
-        <div style="width: 10%; text-align:center; padding-left: 30px; margin: 5px 0;">
-          <a href="/balloon/main"><img  src="/img/logotest1.png" alt="로고" style="width:180px; filter: drop-shadow(5px 5px 5px #fff);"></a>
+        <div style="width: 15%; height:100%; text-align:center; margin: 5px 0;">
+          <a href="/balloon/main"><img  src="/img/logotest1.png" alt="로고" style="height:100%; filter: drop-shadow(5px 5px 5px #fff);"></a>
         </div>
-        <div style="width: 75%;">
+
+        <div style="width: 65%;">
           <ul class="navbar-nav" id="navList">
             <li class="nav-item">
               <a class="nav-link" href="/balloon/walk_map">지도</a>
@@ -64,14 +74,13 @@
           </ul>
         </div>
 
-        <div id="navBtn" style="width: 15%">
+        <div id="navBtn" style="width: 20%;">
           <div sec:authorize="isAnonymous()">
             <a id="loginBtn" href="/balloon/login" type="button" class="btn">로그인</a>
           </div>
 
           <div sec:authorize="isAuthenticated()">
             <form action="/logout" method="POST">
-  <!--            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />-->
               <button id="logoutBtn" class="btn" type="submit">로그아웃</button>
             </form>
           </div>
@@ -83,8 +92,6 @@
           <div sec:authorize="isAuthenticated()">
             <a id="myBtn" href="/balloon/my_info" type="button" class="btn">마이페이지</a>
           </div>
-
-
         </div>
       </nav>
 
